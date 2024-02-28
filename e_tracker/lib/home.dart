@@ -49,17 +49,34 @@ class _HomeScreenState extends State<HomeScreen> {
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Colors.blue,
+            // DrawerHeader(
+            //   decoration: const BoxDecoration(
+            //     color: Colors.blue,
+            //   ),
+            //   child: Text(
+            //     'Welcome ${widget.data}',
+            //     style: const TextStyle(fontSize: 20),
+            //   ),
+            // ),
+            UserAccountsDrawerHeader(
+              decoration: const BoxDecoration(color: Color(0xff764abc)),
+              accountName: Text(
+                widget.data,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              child: Text(
-                'Welcome ${widget.data}',
-                style: const TextStyle(fontSize: 20),
+              accountEmail: const Text(
+                "abcdeh@gmail.com",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
+              currentAccountPicture: const FlutterLogo(),
             ),
             ListTile(
               title: const Text('DashBoard'),
+              leading: const Icon(Icons.dashboard),
               selected: _selectedIndex == 0,
               onTap: () {
                 // Update the state of the app
@@ -69,7 +86,19 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             ListTile(
+              title: const Text('Add Expenses Category'),
+              leading: const Icon(Icons.category),
+              selected: _selectedIndex == 1,
+              onTap: () {
+                // Update the state of the app
+                _onItemTapped(1);
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
               title: const Text('Add Expenses'),
+              leading: const Icon(Icons.add_circle),
               selected: _selectedIndex == 1,
               onTap: () {
                 // Update the state of the app
@@ -80,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               title: const Text('View Expense'),
-              leading: Icon(Icons.input),
+              leading: const Icon(Icons.view_list),
               selected: _selectedIndex == 2,
               onTap: () {
                 // Update the state of the app
