@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 
+//my class
+class Category {
+  final String cattype;
+
+  Category({
+    required this.cattype,
+  });
+}
+
 class ExpensesCategory extends StatefulWidget {
   const ExpensesCategory({Key? key}) : super(key: key);
 
@@ -11,7 +20,9 @@ class ExpensesCategory extends StatefulWidget {
 class _ExpensesCategoryState extends State<ExpensesCategory> {
   final TextEditingController _typeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final List<String> _categories = [];
+
+  //using my created category
+  final List<Category> _categories = [];
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +80,9 @@ class _ExpensesCategoryState extends State<ExpensesCategory> {
                 // Only proceed if the form is valid
                 setState(() {
                   if (_categories.length < 5) {
-                    _categories.add(_typeController.text);
+                    _categories.add(Category(
+                      cattype: _typeController.text,
+                    ));
                     _typeController.clear();
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -85,21 +98,29 @@ class _ExpensesCategoryState extends State<ExpensesCategory> {
           ),
           const SizedBox(height: 20),
           Expanded(
-            child: ListView.builder(
-              itemCount: _categories.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(_categories[index]),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () {
-                      setState(() {
-                        _categories.removeAt(index);
-                      });
-                    },
-                  ),
-                );
-              },
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                  columns: const [
+                    DataColumn(label: Text('Category Name')),
+                    DataColumn(label: Text('Action ')),
+                  ],
+                  rows: _categories.map((c) {
+                    final index = _categories.indexOf(c);
+                    return DataRow(cells: [
+                      DataCell(Text(c.cattype)),
+                      DataCell(
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () {
+                            setState(() {
+                              _categories.removeAt(index);
+                            });
+                          },
+                        ),
+                      ),
+                    ]);
+                  }).toList()),
             ),
           ),
         ],

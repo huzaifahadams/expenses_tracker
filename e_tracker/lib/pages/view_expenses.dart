@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class Expense {
   final String amount;
@@ -15,15 +14,15 @@ class Expense {
   });
 }
 
-class Expenses extends StatefulWidget {
-  const Expenses({Key? key}) : super(key: key);
+class ExpensesView extends StatefulWidget {
+  const ExpensesView({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
-  _ExpensesState createState() => _ExpensesState();
+  _ExpensesViewState createState() => _ExpensesViewState();
 }
 
-class _ExpensesState extends State<Expenses> {
+class _ExpensesViewState extends State<ExpensesView> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -61,7 +60,7 @@ class _ExpensesState extends State<Expenses> {
             height: 20,
           ),
           const Center(
-            child: Text('Add Expenses'),
+            child: Text('Add ExpensesView'),
           ),
           const SizedBox(
             height: 20,
@@ -206,18 +205,27 @@ class _ExpensesState extends State<Expenses> {
                   DataColumn(label: Text('Amount')),
                   DataColumn(label: Text('Expense Type')),
                   DataColumn(label: Text('Description')),
-                  DataColumn(label: Text('Action')),
+                  DataColumn(label: Text('Edit')),
+                  DataColumn(label: Text('Delete')),
                 ],
                 rows: _data.take(5).map((expense) {
                   final index = _data.indexOf(expense);
                   return DataRow(cells: [
                     DataCell(Text(
                         '${expense.selectedDate.day}-${expense.selectedDate.month}-${expense.selectedDate.year}')),
-                    DataCell(Text(
-                        NumberFormat.currency(locale: 'en_US', symbol: 'UGX')
-                            .format(double.parse(expense.amount)))),
+                    DataCell(Text(expense.amount)),
                     DataCell(Text(expense.selectedExpense)),
                     DataCell(Text(expense.description)),
+                    DataCell(
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                          setState(() {
+                            // _data.removeAt(index);
+                          });
+                        },
+                      ),
+                    ),
                     DataCell(
                       IconButton(
                         icon: const Icon(Icons.delete),
@@ -241,6 +249,6 @@ class _ExpensesState extends State<Expenses> {
 
 void main() {
   runApp(const MaterialApp(
-    home: Expenses(),
+    home: ExpensesView(),
   ));
 }

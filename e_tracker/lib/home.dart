@@ -1,10 +1,10 @@
+import 'package:e_tracker/pages/e_category.dart';
+import 'package:e_tracker/pages/expenses.dart';
+import 'package:e_tracker/pages/view_expenses.dart';
 import 'package:flutter/material.dart';
 
-import 'pages/e_category.dart';
-import 'pages/expenses.dart';
-
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.data});
+  const HomeScreen({Key? key, required this.data}) : super(key: key);
 
   final String data;
 
@@ -13,25 +13,54 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
-  static TextStyle optionStyle =
-      const TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static final List<Widget> _widgetOptions = <Widget>[
-    Text(
+  int _mainContentIndex = 0;
+  int _bottomNavBarIndex = 0;
+  bool _isBottomNavBarSelected = false;
+
+  static final List<Widget> _mainContentOptions = <Widget>[
+    const Text(
       'Dashboard',
-      style: optionStyle,
+      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
     ),
     const ExpensesCategory(),
     const Expenses(),
-    Text(
-      'Index 3: last',
-      style: optionStyle,
+    const ExpensesView(),
+  ];
+
+  static final List<Widget> _bottomNavBarOptions = <Widget>[
+    const Text(
+      'Home',
+      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    ),
+    const Text(
+      'Account',
+      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    ),
+    const Text(
+      'Profile',
+      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    ),
+    const Text(
+      'Budget Tracking',
+      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
     ),
   ];
 
-  void _onItemTapped(int index) {
+  void _onDrawerItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      _mainContentIndex = index;
+      _isBottomNavBarSelected =
+          false; // Reset the flag when drawer item is tapped
+    });
+  }
+
+  void _onBottomNavBarItemTapped(int index) {
+    setState(() {
+      _bottomNavBarIndex = index;
+      _isBottomNavBarSelected =
+          true; // Set the flag when bottom nav item is tapped
+      _mainContentIndex =
+          0; // Reset main content index when bottom nav item is tapped
     });
   }
 
@@ -42,16 +71,17 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('All Your Expenses in one Place'),
         backgroundColor: Colors.grey,
       ),
-      body: Center(
-        child: _widgetOptions[_selectedIndex],
-      ),
+      body: _isBottomNavBarSelected
+          ? _bottomNavBarOptions[_bottomNavBarIndex]
+          : _mainContentOptions[_mainContentIndex],
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
             UserAccountsDrawerHeader(
               decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 149, 146, 153)),
+                color: Color.fromARGB(255, 149, 146, 153),
+              ),
               accountName: Text(
                 widget.data,
                 style: const TextStyle(
@@ -69,41 +99,64 @@ class _HomeScreenState extends State<HomeScreen> {
             ListTile(
               title: const Text('DashBoard'),
               leading: const Icon(Icons.dashboard),
-              selected: _selectedIndex == 0,
               onTap: () {
-                _onItemTapped(0);
+                _onDrawerItemTapped(0);
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: const Text('Add Expenses Category'),
               leading: const Icon(Icons.category),
-              selected: _selectedIndex == 1,
               onTap: () {
-                _onItemTapped(1);
+                _onDrawerItemTapped(1);
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: const Text('Add Expenses'),
               leading: const Icon(Icons.add_circle),
-              selected: _selectedIndex == 2,
               onTap: () {
-                _onItemTapped(2);
+                _onDrawerItemTapped(2);
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: const Text('View Expense'),
               leading: const Icon(Icons.view_list),
-              selected: _selectedIndex == 3,
               onTap: () {
-                _onItemTapped(3);
+                _onDrawerItemTapped(3);
                 Navigator.pop(context);
               },
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.grey, // Set background color
+        unselectedItemColor: Colors.black, // Set color for unselected items
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle),
+            label: 'Account',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart),
+            label: 'Budget Tracking',
+          ),
+        ],
+        currentIndex: _bottomNavBarIndex,
+        selectedItemColor: _isBottomNavBarSelected
+            ? Colors.blue
+            : Colors.black, // Conditional color for selected item
+        onTap: _onBottomNavBarItemTapped,
       ),
     );
   }
